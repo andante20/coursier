@@ -41,7 +41,7 @@ lazy val coreJs = core.js
 
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .disablePlugins(ScriptedPlugin)
-  .dependsOn(core, cache % "test", scalaz)
+  .dependsOn(core, cache % Test, scalaz)
   .jsSettings(
     scalaJSStage.in(Global) := FastOptStage,
     testOptions := testOptions.dependsOn(runNpmInstallIfNeeded).value
@@ -182,8 +182,8 @@ lazy val cli = project
         Seq(
           Deps.caseApp,
           Deps.argonautShapeless,
-          Deps.junit % "test", // to be able to run tests with pants
-          Deps.scalatest % "test"
+          Deps.junit % Test, // to be able to run tests with pants
+          Deps.scalatest % Test
         )
       else
         Seq()
@@ -279,7 +279,7 @@ lazy val `sbt-shared` = project
 
 lazy val `sbt-coursier` = project
   .dependsOn(coreJvm, cacheJvm, extra, `sbt-shared`, scalazJvm)
-  .disablePlugins(ScriptedPlugin)
+  .enablePlugins(ScriptedPlugin)
   .settings(
     plugin,
     utest,
@@ -298,7 +298,7 @@ lazy val `sbt-coursier` = project
 
 lazy val `sbt-pgp-coursier` = project
   .dependsOn(`sbt-coursier`)
-  .disablePlugins(ScriptedPlugin)
+  .enablePlugins(ScriptedPlugin)
   .settings(
     plugin,
     libs ++= {
@@ -316,8 +316,7 @@ lazy val `sbt-pgp-coursier` = project
   )
 
 lazy val `sbt-shading` = project
-  .enablePlugins(ShadingPlugin)
-  .disablePlugins(ScriptedPlugin)
+  .enablePlugins(ScriptedPlugin, ShadingPlugin)
   .dependsOn(`sbt-coursier`)
   .settings(
     plugin,
